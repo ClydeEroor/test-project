@@ -1,90 +1,112 @@
 import * as React from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useEffect, useState } from 'react';
+import Select from '@mui/material/Select';
 import { Button, TextField } from '@mui/material';
+import { useFormik } from 'formik';
+import { months } from '@/src/lib/months';
+import * as Yup from 'yup';
+
+const validationSchema = Yup.object().shape({
+  type: Yup.string().required('Required'),
+  amount: Yup.number().required('Required'),
+  month: Yup.string().required('Required'),
+});
 
 const InputForm = () => {
-  const [selectValue, setSelectValue] = React.useState('');
-  const [date, setDate] = useState<Date>();
-  const [category, setCategory] = useState('');
+  const { values, handleChange, handleBlur, touched, errors, handleSubmit } =
+    useFormik({
+      initialValues: {
+        type: '',
+        category: '',
+        amount: '',
+        month: '',
+      },
+      validationSchema,
+      onSubmit: (values) => {
+        alert(JSON.stringify(values, null, 2));
+      },
+    });
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setSelectValue(event.target.value);
+  const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value === '' || /^[0-9\b]+$/.test(event.target.value)) {
+      handleChange(event);
+    }
   };
-  const handleCategory = (event: SelectChangeEvent) => {
-    setCategory(event.target.value);
-  };
-
-  useEffect(() => {
-    console.log(date?.$d);
-  }, [date]);
 
   return (
-    <div
-      className={
-        'flex w-full flex-col h-full  items-center max-w-[700px] justify-center '
-      }
+    <form
+      className={'flex w-full flex-col h-full max-w-[700px] justify-center '}
+      onSubmit={handleSubmit}
     >
-      <FormControl className={'flex w-full flex-col'} variant="standard">
-        <InputLabel
-          className={'w-full flex'}
-          id="demo-simple-select-standard-label"
-        >
-          Income/Waste
-        </InputLabel>
+      <InputLabel className={'w-full flex'} id="type-label">
+        Income/Waste
+      </InputLabel>
+      <Select
+        className={'w-full'}
+        labelId="type-label"
+        label="Value"
+        name={'type'}
+        value={values.type}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        error={touched.type && Boolean(errors.type)}
+        // helperText={touched.type && errors.type} // TODO
+      >
+        <MenuItem value={'Waste'}>Waste</MenuItem>
+        <MenuItem value={'Income'}>Income</MenuItem>
+      </Select>
+
+      {values.type === 'Waste' ? (
         <Select
-          className={'w-[150px]'}
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={selectValue}
+          className={'w-full'}
+          value={values.category}
           onChange={handleChange}
-          label="Value"
+          onBlur={handleBlur}
+          error={touched.category && Boolean(errors.category)}
+          label="Category"
+          name={'category'}
         >
-          <MenuItem value={'Waste'}>Waste</MenuItem>
-          <MenuItem value={'Income'}>Income</MenuItem>
+          <MenuItem value={'Home'}>Home</MenuItem>
+          <MenuItem value={'Family'}>Family</MenuItem>
+          <MenuItem value={'Food'}>Food</MenuItem>
+          <MenuItem value={'Sport'}>Sport</MenuItem>
+          <MenuItem value={'Education'}>Education</MenuItem>
+          <MenuItem value={'Health'}>Health</MenuItem>
+          <MenuItem value={'Gifts'}>Gifts</MenuItem>
+          <MenuItem value={'Transport'}>Transport</MenuItem>
         </Select>
+      ) : null}
 
-        {selectValue === 'Waste' ? (
-          <Select
-            className={'w-[150px]'}
-            labelId="demo-simple-select-standard-label"
-            id="demo-simple-select-standard"
-            value={category}
-            onChange={handleCategory}
-            label="Category"
-          >
-            <MenuItem value={'Home'}>Home</MenuItem>
-            <MenuItem value={'Family'}>Family</MenuItem>
-            <MenuItem value={'Food'}>Food</MenuItem>
-            <MenuItem value={'Sport'}>Sport</MenuItem>
-            <MenuItem value={'Education'}>Education</MenuItem>
-            <MenuItem value={'Health'}>Health</MenuItem>
-            <MenuItem value={'Gifts'}>Gifts</MenuItem>
-            <MenuItem value={'Transport'}>Transport</MenuItem>
-          </Select>
-        ) : null}
-
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            onChange={(event) => setDate(event)}
-            label="Basic date picker"
-          />
-        </LocalizationProvider>
-        <TextField
-          placeholder={'value'}
-          className={'bg-blackPrimary border-[#000] border'}
-          type="text"
-        />
-      </FormControl>
+      <Select
+        className={'w-full mb-3'}
+        labelId="type-label"
+        label="Month"
+        name={'month'}
+        value={values.month}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        error={touched.month && Boolean(errors.month)}
+        // helperText={touched.type && errors.type} // TODO
+      >
+        {months.map((month) => (
+          <MenuItem value={month}>{month}</MenuItem>
+        ))}
+      </Select>
+      <TextField
+        name={'amount'}
+        value={values.amount}
+        onChange={handleAmountChange}
+        onBlur={handleBlur}
+        error={touched.amount && Boolean(errors.amount)}
+        helperText={touched.amount && errors.amount}
+        label={'Amount'}
+        placeholder={'Money Amount'}
+        className={'bg-blackPrimary border-[#000] border'}
+      />
 
       <Button type={'submit'}>Submit</Button>
-    </div>
+    </form>
   );
 };
 export default InputForm;
