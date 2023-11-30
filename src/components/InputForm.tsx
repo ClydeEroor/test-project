@@ -7,6 +7,8 @@ import { useFormik } from 'formik';
 import { months } from '@/src/lib/months';
 import * as Yup from 'yup';
 import { useEffect, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '@/src/store';
 
 const validationSchema = Yup.object().shape({
   type: Yup.string().required('Required'),
@@ -21,7 +23,8 @@ type ListProp = {
   month: string;
 };
 
-const InputForm = () => {
+const InputForm = observer(() => {
+  const { addReport } = useStore(null);
   const [list, setList] = useState<[] | ListProp[]>([]);
 
   const {
@@ -43,6 +46,7 @@ const InputForm = () => {
     onSubmit: (values) => {
       setList((prevList) => [...prevList, values]);
       resetForm();
+      addReport(values);
     },
   });
 
@@ -141,5 +145,5 @@ const InputForm = () => {
       </Button>
     </form>
   );
-};
+});
 export default InputForm;
