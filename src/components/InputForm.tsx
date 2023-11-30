@@ -25,7 +25,7 @@ type ListProp = {
 
 const InputForm = observer(() => {
   const { addReport } = useStore(null);
-  const [list, setList] = useState<[] | ListProp[]>([]);
+  const [list, setList] = useState<ListProp[]>([]);
 
   const {
     values,
@@ -45,8 +45,8 @@ const InputForm = observer(() => {
     validationSchema,
     onSubmit: (values) => {
       setList((prevList) => [...prevList, values]);
-      resetForm();
       addReport(values);
+      resetForm();
     },
   });
 

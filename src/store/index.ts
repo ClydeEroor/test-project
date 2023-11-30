@@ -31,6 +31,7 @@ export type IStoreSnapshotIn = SnapshotIn<typeof Store>;
 export type IStoreSnapshotOut = SnapshotOut<typeof Store>;
 
 let store: IStore | undefined;
+
 const initialState = { reports: [] };
 export function initializeStore(snapshot = null) {
   const _store = store ?? Store.create(initialState);
