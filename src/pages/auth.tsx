@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { pagesPath } from '../lib/$path';
+import { useAuth } from '@/src/hooks/useAuth';
 import { useRouter } from 'next/router';
+import { pagesPath } from '@/src/lib/$path';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-
+  const { login } = useAuth(); //TODO get from context;
   const { push } = useRouter();
 
   const onButtonClick = () => {
@@ -37,6 +38,11 @@ const Auth = () => {
       setPasswordError('Please enter a valid password');
       return;
     }
+    login({
+      id: '1',
+      name: 'testLogin22',
+      email: 'john.doe@email.com',
+    });
     push(pagesPath.data.$url().pathname);
   };
 
@@ -47,6 +53,7 @@ const Auth = () => {
           'flex flex-col w-full justify-center items-center h-full bg-blackPrimary'
         }
       >
+        testLogin22 s#dDA23@44#Ds
         <div className={'flex flex-col'}>
           <input
             value={email}

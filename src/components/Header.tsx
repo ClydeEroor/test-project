@@ -1,10 +1,13 @@
 import React from 'react';
 import { pagesPath } from '@/src/lib/$path';
 import Link from 'next/link';
+import { useAuth } from '@/src/hooks/useAuth';
+import { useRouter } from 'next/router';
 
 const Header = () => {
+  const { logout } = useAuth(); //TODO get from context;
   const { data, developer, instructions, result } = pagesPath;
-
+  const { push } = useRouter();
   const navigation = [
     { pageName: 'Data', path: data.$url().pathname },
     { pageName: 'Result', path: result.$url().pathname },
@@ -13,7 +16,8 @@ const Header = () => {
   ];
 
   const handleLogOut = () => {
-    console.log('this button for logOut');
+    push(pagesPath.auth.$url().pathname);
+    logout();
   };
 
   return (
@@ -22,7 +26,7 @@ const Header = () => {
         {navigation.map((elem, idx) => {
           return (
             <Link
-              className={'text-[20px] text-white text-cyan-300'}
+              className={'text-[20px] text-white'}
               key={`link-item-${idx}`}
               href={`${elem.path}`}
             >
