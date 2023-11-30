@@ -17,12 +17,12 @@ const Header = () => {
   };
 
   return (
-    <header className={'flex w-full bg-violetBlue justify-between px-20 py-7'}>
+    <header className={'flex w-full bg-[#5423E7] justify-between px-20 py-7'}>
       <div className={'flex gap-20 justify-center items-center'}>
         {navigation.map((elem, idx) => {
           return (
             <Link
-              className={'text-[20px] hover:text-[#fff]'}
+              className={'text-[20px] text-white text-cyan-300'}
               key={`link-item-${idx}`}
               href={`${elem.path}`}
             >
@@ -32,7 +32,9 @@ const Header = () => {
         })}
       </div>
       <button
-        className={'px-10 py-2 text-[20px] rounded-2xl bg-[#fff] items-center'}
+        className={
+          'px-10 py-2 text-[20px] rounded-2xl bg-[#fff] border-none items-center'
+        }
         type={'submit'}
         onClick={handleLogOut}
       >

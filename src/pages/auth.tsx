@@ -52,21 +52,21 @@ const Auth = () => {
             value={email}
             placeholder="Enter your email here"
             onChange={(ev) => setEmail(ev.target.value)}
-            className={'rounded-2xl py-2 px-3'}
+            className={'rounded-2xl py-2 px-3 border-none '}
           />
         </div>
-        <div className={'flex flex-col mt-[15px]'}>
+        <div className={'flex flex-col mt-[15px] '}>
           <input
             value={password}
             type={'password'}
             placeholder="Enter your password here"
             onChange={(ev) => setPassword(ev.target.value)}
-            className={'rounded-2xl py-2 px-3'}
+            className={'rounded-2xl py-2 px-3 border-none '}
           />
         </div>
         <div className={'flex flex-col mt-[15px]'}>
           <button
-            className={'px-20 py-2 bg-violetBlue rounded-2xl'}
+            className={'px-20 py-2 bg-violet-600 border-none rounded-2xl'}
             type="submit"
             onClick={onButtonClick}
             value={'Log in'}
@@ -74,7 +74,7 @@ const Auth = () => {
             Log in
           </button>
         </div>
-        <label className="py-[20px] h-[40px] text-error">
+        <label className="py-[20px] h-[40px] text-[#FF3333]">
           {passwordError || emailError}
         </label>
       </div>

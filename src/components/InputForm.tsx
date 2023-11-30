@@ -6,6 +6,7 @@ import { Button, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { months } from '@/src/lib/months';
 import * as Yup from 'yup';
+import { useEffect, useState } from 'react';
 
 const validationSchema = Yup.object().shape({
   type: Yup.string().required('Required'),
@@ -13,20 +14,37 @@ const validationSchema = Yup.object().shape({
   month: Yup.string().required('Required'),
 });
 
+type ListProp = {
+  type: string;
+  category?: string;
+  amount: string;
+  month: string;
+};
+
 const InputForm = () => {
-  const { values, handleChange, handleBlur, touched, errors, handleSubmit } =
-    useFormik({
-      initialValues: {
-        type: '',
-        category: '',
-        amount: '',
-        month: '',
-      },
-      validationSchema,
-      onSubmit: (values) => {
-        alert(JSON.stringify(values, null, 2));
-      },
-    });
+  const [list, setList] = useState<[] | ListProp[]>([]);
+
+  const {
+    values,
+    handleChange,
+    handleBlur,
+    touched,
+    errors,
+    handleSubmit,
+    resetForm,
+  } = useFormik({
+    initialValues: {
+      type: '',
+      category: '',
+      amount: '',
+      month: '',
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      setList((prevList) => [...prevList, values]);
+      resetForm();
+    },
+  });
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value === '' || /^[0-9\b]+$/.test(event.target.value)) {
@@ -34,9 +52,15 @@ const InputForm = () => {
     }
   };
 
+  useEffect(() => {
+    console.log(list);
+  }, [list]);
+
   return (
     <form
-      className={'flex w-full flex-col h-full max-w-[700px] justify-center '}
+      className={
+        'flex w-full flex-col h-full gap-5 max-w-[700px] justify-center '
+      }
       onSubmit={handleSubmit}
     >
       <InputLabel className={'w-full flex'} id="type-label">
@@ -45,7 +69,6 @@ const InputForm = () => {
       <Select
         className={'w-full'}
         labelId="type-label"
-        label="Value"
         name={'type'}
         value={values.type}
         onChange={handleChange}
@@ -58,41 +81,51 @@ const InputForm = () => {
       </Select>
 
       {values.type === 'Waste' ? (
-        <Select
-          className={'w-full'}
-          value={values.category}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.category && Boolean(errors.category)}
-          label="Category"
-          name={'category'}
-        >
-          <MenuItem value={'Home'}>Home</MenuItem>
-          <MenuItem value={'Family'}>Family</MenuItem>
-          <MenuItem value={'Food'}>Food</MenuItem>
-          <MenuItem value={'Sport'}>Sport</MenuItem>
-          <MenuItem value={'Education'}>Education</MenuItem>
-          <MenuItem value={'Health'}>Health</MenuItem>
-          <MenuItem value={'Gifts'}>Gifts</MenuItem>
-          <MenuItem value={'Transport'}>Transport</MenuItem>
-        </Select>
+        <>
+          <InputLabel className={'w-full flex'} id="type-label">
+            Category
+          </InputLabel>
+          <Select
+            className={'w-full'}
+            value={values.category}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.category && Boolean(errors.category)}
+            name={'category'}
+          >
+            <MenuItem value={'Home'}>Home</MenuItem>
+            <MenuItem value={'Family'}>Family</MenuItem>
+            <MenuItem value={'Food'}>Food</MenuItem>
+            <MenuItem value={'Sport'}>Sport</MenuItem>
+            <MenuItem value={'Education'}>Education</MenuItem>
+            <MenuItem value={'Health'}>Health</MenuItem>
+            <MenuItem value={'Gifts'}>Gifts</MenuItem>
+            <MenuItem value={'Transport'}>Transport</MenuItem>
+          </Select>
+        </>
       ) : null}
-
+      <InputLabel className={'w-full flex'} id="type-label">
+        Month
+      </InputLabel>
       <Select
-        className={'w-full mb-3'}
+        className={'w-full'}
         labelId="type-label"
-        label="Month"
         name={'month'}
         value={values.month}
         onChange={handleChange}
         onBlur={handleBlur}
         error={touched.month && Boolean(errors.month)}
-        // helperText={touched.type && errors.type} // TODO
+        // helperText={touched.type && errors.type}
       >
-        {months.map((month) => (
-          <MenuItem value={month}>{month}</MenuItem>
+        {months.map((month, idx) => (
+          <MenuItem key={`month-select-${idx}`} value={month}>
+            {month}
+          </MenuItem>
         ))}
       </Select>
+      <InputLabel className={'w-full flex'} id="type-label">
+        Amount
+      </InputLabel>
       <TextField
         name={'amount'}
         value={values.amount}
@@ -100,12 +133,12 @@ const InputForm = () => {
         onBlur={handleBlur}
         error={touched.amount && Boolean(errors.amount)}
         helperText={touched.amount && errors.amount}
-        label={'Amount'}
         placeholder={'Money Amount'}
-        className={'bg-blackPrimary border-[#000] border'}
+        className={' border border-black'}
       />
-
-      <Button type={'submit'}>Submit</Button>
+      <Button className={'bg-white mt-[20px]'} type={'submit'}>
+        Submit
+      </Button>
     </form>
   );
 };
